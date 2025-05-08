@@ -43,7 +43,7 @@ export const sendItformEmail = async (req, res) => {
     from: process.env.SMTP_USER,
     to: email,
     subject: 'Thanks for contacting us!',
-    text: `Hi ${name},\n\nThanks for reaching out. We’ve received your message and will get back to you shortly.\n\nYour message:\n"${message}"\n\n— The EIT Team`
+    text: `Hi ${fullName},\n\nThanks for reaching out. We’ve received your message and will get back to you shortly.\n\nYour message:\n"${message}"\n\n— The EIT Team`
   };
   const transporter = hostingerTransporter;
   try {
