@@ -61,3 +61,18 @@ export const deleteCategory = async (req, res) => {
             .json({ status: false, message: err.message });
     }
 };
+
+export const getCategoryCourses = async (req, res) => {
+    const { categoryIds } = req.body;
+    const qry = `SELECT id, category_id, name, course_logo, price from courses WHERE category_id IN (${categoryIds}) ORDER BY id desc`;
+    try {
+        const [rows] = await db.query(qry);
+        return res
+            .status(httpStatus.OK)
+            .json({ status: true, data: rows });
+    } catch (err) {
+        return res
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .json({ status: false, message: err.message });
+    }
+};

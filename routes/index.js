@@ -6,10 +6,10 @@ import categoryRoutes from './category.route.js';
 import courseRoutes from './course.route.js';
 const router = express.Router();
 
-router.use('/eita/mail', mailRoutes);
-router.use('/eita/auth', authRoutes);
-router.use('/eita/user', userRoutes);
-router.use('/eita/category', categoryRoutes);
-router.use('/eita/course', courseRoutes);
+router.use('/mail', mailRoutes);
+router.use('/auth', authRoutes);
+router.use('/user', userRoutes);
+router.use('/category', categoryRoutes);
+router.use('/course', courseRoutes);
 
 export default router;
