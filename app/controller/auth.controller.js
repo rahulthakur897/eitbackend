@@ -1,11 +1,14 @@
 import { status as httpStatus } from "http-status";
+import md5 from "md5";
 import dotenv from 'dotenv';
 dotenv.config();
 import db from "../../config/database.js";
+import { UserType } from "../utils/constant.js";
 
 export const userLogin = async (req, res) => {
   const { email, password } = req.body;
-  const qry = `SELECT id, name, contact, user_type, email, profile_photo FROM users WHERE email=${email} AND password=${password}`;
+  const hash = md5(password);
+  const qry = `SELECT id, name, contact, user_type, email, profile_photo FROM users WHERE email='${email}' AND password='${hash}'`;
   try {
     const [rows] = await db.query(qry);
     if(rows?.length){
@@ -17,6 +20,23 @@ export const userLogin = async (req, res) => {
         .status(httpStatus.UNAUTHORIZED)
         .json({ status: false, message: 'Invalid username or password' });
     }
+  } catch (err) {
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: err.message });
+  }
+};
+
+export const registerUser = async (req, res) => {
+  const { name, contact, email, password } = req.body;
+  const hash = md5(password);
+  const qry = `INSERT INTO users SET name='${name}', contact='${contact}', user_type='${UserType.USER}', email='${email}', password='${hash}'`;
+  console.log(qry);
+  try {
+    const [rows] = await db.query(qry);
+    return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: rows?.insertId });
   } catch (err) {
     return res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
