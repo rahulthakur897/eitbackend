@@ -8,11 +8,22 @@ export const getPopularCourses = async (req, res) => {
   try {
     const [rows] = await db.query(qry);
     return res
-        .status(httpStatus.OK)
-        .json({ status: true, data: rows });
+      .status(httpStatus.OK)
+      .json({ status: true, data: rows });
   } catch (err) {
     return res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
       .json({ status: false, message: err.message });
   }
 };
+
+export const getCourseDetail = async (courseId) => {
+  const qry = `SELECT * FROM courses WHERE id=?`;
+  try {
+    const [rows] = await db.query(qry, [courseId]);
+    console.log("rows", rows);
+    return { status: true, data: rows };
+  } catch (err) {
+    return { status: false, message: err.message };
+  }
+}

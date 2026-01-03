@@ -19,9 +19,9 @@ export const getCategories = async (req, res) => {
 
 export const addCategory = async (req, res) => {
     const { name } = req.body;
-    const qry = `INSERT INTO categories SET name='${name}'`;
+    const qry = `INSERT INTO categories SET name=?`;
     try {
-        const [rows] = await db.query(qry);
+        const [rows] = await db.query(qry, [name]);
         return res
             .status(httpStatus.OK)
             .json({ status: true, data: rows?.insertId });
@@ -34,9 +34,9 @@ export const addCategory = async (req, res) => {
 
 export const updateCategory = async (req, res) => {
     const { id, name } = req.body;
-    const qry = `UPDATE categories SET name='${name}' WHERE id=${id}`;
+    const qry = `UPDATE categories SET name=? WHERE id=?`;
     try {
-        const [rows] = await db.query(qry);
+        const [rows] = await db.query(qry, [name, id]);
         return res
             .status(httpStatus.OK)
             .json({ status: true, data: rows?.affectedRows });
@@ -49,9 +49,9 @@ export const updateCategory = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
     const { id } = req.params;
-    const qry = `DELETE FROM categories WHERE id=${id}`;
+    const qry = `DELETE FROM categories WHERE id=?`;
     try {
-        const [rows] = await db.query(qry);
+        const [rows] = await db.query(qry, [id]);
         return res
             .status(httpStatus.OK)
             .json({ status: true, data: rows?.affectedRows });
@@ -64,9 +64,9 @@ export const deleteCategory = async (req, res) => {
 
 export const getCategoryCourses = async (req, res) => {
     const { categoryIds } = req.body;
-    const qry = `SELECT id, category_id, name, course_logo, price from courses WHERE category_id IN (${categoryIds}) ORDER BY id desc`;
+    const qry = `SELECT id, category_id, name, course_logo, price from courses WHERE category_id IN (?) ORDER BY id desc`;
     try {
-        const [rows] = await db.query(qry);
+        const [rows] = await db.query(qry, [categoryIds]);
         return res
             .status(httpStatus.OK)
             .json({ status: true, data: rows });

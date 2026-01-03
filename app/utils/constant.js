@@ -3,3 +3,8 @@ export const UserType = {
     INSTRUCTOR: 'instructor',
     USER: 'user',
 }
+
+export const UserChoice = {
+    CART: 'cart',
+    WISHLIST: 'wishlist',
+}
