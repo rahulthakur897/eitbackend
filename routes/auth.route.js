@@ -1,5 +1,5 @@
 import express from "express";
-import { userLogin } from "../app/controller/eiaAcademy.controller.js";
+import { userLogin } from "../app/controller/auth.controller.js";
 const router = express.Router();
 
 router.post("/login", userLogin);
