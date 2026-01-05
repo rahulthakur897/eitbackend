@@ -17,6 +17,20 @@ export const getPopularCourses = async (req, res) => {
   }
 };
 
+export const getAllCourses = async (req, res) => {
+  const qry = `SELECT * FROM courses ORDER BY id DESC`;
+  try {
+    const [rows] = await db.query(qry);
+    return res
+      .status(httpStatus.OK)
+      .json({ status: true, data: rows });
+  } catch (err) {
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: err.message });
+  }
+};
+
 export const getCourseDetail = async (courseId) => {
   const qry = `SELECT * FROM courses WHERE id=?`;
   try {
