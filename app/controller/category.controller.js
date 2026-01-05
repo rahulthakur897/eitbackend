@@ -36,7 +36,7 @@ export const updateCategory = async (req, res) => {
     const { id, name } = req.body;
     const qry = `UPDATE categories SET name=? WHERE id=?`;
     try {
-        const [rows] = await db.query(qry, [name, id]);
+        const [rows] = await db.query(qry, [    , id]);
         return res
             .status(httpStatus.OK)
             .json({ status: true, data: rows?.affectedRows });
