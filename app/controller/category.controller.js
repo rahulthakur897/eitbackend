@@ -4,7 +4,7 @@ dotenv.config();
 import db from "../../config/database.js";
 
 export const getCategories = async (req, res) => {
-    const qry = `SELECT id, name FROM categories ORDER BY id DESC`;
+    const qry = `SELECT id, name, slug FROM categories ORDER BY id DESC`;
     try {
         const [rows] = await db.query(qry);
         return res
@@ -18,10 +18,10 @@ export const getCategories = async (req, res) => {
 };
 
 export const addCategory = async (req, res) => {
-    const { name } = req.body;
-    const qry = `INSERT INTO categories SET name=?`;
+    const { name, slug } = req.body;
+    const qry = `INSERT INTO categories SET name=?, slug=?`;
     try {
-        const [rows] = await db.query(qry, [name]);
+        const [rows] = await db.query(qry, [name, slug]);
         return res
             .status(httpStatus.OK)
             .json({ status: true, data: rows?.insertId });
@@ -33,10 +33,10 @@ export const addCategory = async (req, res) => {
 };
 
 export const updateCategory = async (req, res) => {
-    const { id, name } = req.body;
-    const qry = `UPDATE categories SET name=? WHERE id=?`;
+    const { id, name,slug } = req.body;
+    const qry = `UPDATE categories SET name=?, slug=?WHERE id=?`;
     try {
-        const [rows] = await db.query(qry, [    , id]);
+        const [rows] = await db.query(qry, [name, slug, id]);
         return res
             .status(httpStatus.OK)
             .json({ status: true, data: rows?.affectedRows });
