@@ -19,10 +19,10 @@ export const addCourseToCart = async (req, res) => {
 };
 
 export const removeCourseToCart = async (req, res) => {
-    const { id } = req.params;
-    const qry = `DELETE FROM user_choices WHERE id=?`;
+    const { user_id, course_id, choice_type } = req.params;
+    const qry = `DELETE FROM user_choices WHERE user_id=? AND course_id=? AND choice_type=?`;
     try {
-        const [rows] = await db.query(qry, [id]);
+        const [rows] = await db.query(qry, [ user_id, course_id, choice_type]);
         return res
             .status(httpStatus.OK)
             .json({ status: true, data: rows?.affectedRows });
