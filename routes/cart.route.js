@@ -4,6 +4,5 @@ import { addCourseToCart, removeCourseToCart,
 const router = express.Router();
 
 router.post("/add", addCourseToCart);
-router.delete("/delete", removeCourseToCart);
-
+router.delete("/delete/:user_id/:course_id/:choice_type", removeCourseToCart);
 export default router;
