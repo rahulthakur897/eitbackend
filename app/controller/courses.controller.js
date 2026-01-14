@@ -49,7 +49,7 @@ export const courseDetail = async (courseId) => {
   const qry = `SELECT * FROM courses WHERE id=?`;
   try {
     const [rows] = await db.query(qry, [courseId]);
-    return { status: true, data: rows };
+    return { status: true, data: rows[0] };
   } catch (err) {
     return { status: false, message: err.message };
   }
