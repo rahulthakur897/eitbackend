@@ -31,7 +31,21 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
-export const getCourseDetail = async (courseId) => {
+export const getCourseDetail = async (req, res) => {
+  const {id} = req.params;
+  const { status, data } = await courseDetail(id);
+  if(status){
+    return res
+          .status(httpStatus.OK)
+          .json({ status: true, data: data });
+  } else {
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: err.message });
+  }
+};
+
+export const courseDetail = async (courseId) => {
   const qry = `SELECT * FROM courses WHERE id=?`;
   try {
     const [rows] = await db.query(qry, [courseId]);
@@ -71,7 +85,7 @@ export const getCourseMenu = async (req, res) => {
 };
 
 export const getCourseByCategory = async (categoryId) => {
-  const qry = `SELECT name, slug FROM courses WHERE category_id = ?`;
+  const qry = `SELECT id, name, slug FROM courses WHERE category_id = ?`;
   try {
     const [rows] = await db.query(qry, [categoryId]);
     return rows ;

@@ -2,7 +2,7 @@ import { status as httpStatus } from "http-status";
 import dotenv from 'dotenv';
 dotenv.config();
 import db from "../../config/database.js";
-import { getCourseDetail } from "./courses.controller.js";
+import { courseDetail } from "./courses.controller.js";
 import { UserChoice } from "../utils/constant.js";
 
 export const getMyCourses = async (req, res) => {
@@ -18,7 +18,7 @@ export const getMyCourses = async (req, res) => {
         }
         const courses = await Promise.all(
             rows.map(async ({ course_id }) => {
-                const { status, data } = await getCourseDetail(course_id);
+                const { status, data } = await courseDetail(course_id);
                 return status ? data : null;
             })
         );
