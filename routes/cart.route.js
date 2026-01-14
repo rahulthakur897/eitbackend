@@ -1,8 +1,9 @@
 import express from "express";
-import { addCourseToCart, removeCourseToCart,
+import { addCourseToCart, removeCourseFromCart,
  } from "../app/controller/cart.controller.js";
 const router = express.Router();
 
-router.post("/add", addCourseToCart);
-router.delete("/delete/:user_id/:course_id/:choice_type", removeCourseToCart);
+router.post("/add/:user_id/:course_id/:choice_type", addCourseToCart);
+router.post("/remove/:user_id/:course_id/:choice_type", removeCourseFromCart);
+
 export default router;
