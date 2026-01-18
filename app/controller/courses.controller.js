@@ -1,15 +1,17 @@
 import { status as httpStatus } from "http-status";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 import db from "../../config/database.js";
+import { buildQuery } from "../utils/common.js";
+import formidable, {errors as formidableErrors} from 'formidable';
+import fs from "fs";
+import path from "path";
 
 export const getPopularCourses = async (req, res) => {
   const qry = `SELECT id, name, course_logo FROM courses ORDER BY id DESC`;
   try {
     const [rows] = await db.query(qry);
-    return res
-      .status(httpStatus.OK)
-      .json({ status: true, data: rows });
+    return res.status(httpStatus.OK).json({ status: true, data: rows });
   } catch (err) {
     return res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
@@ -21,9 +23,7 @@ export const getAllCourses = async (req, res) => {
   const qry = `SELECT * FROM courses ORDER BY id DESC`;
   try {
     const [rows] = await db.query(qry);
-    return res
-      .status(httpStatus.OK)
-      .json({ status: true, data: rows });
+    return res.status(httpStatus.OK).json({ status: true, data: rows });
   } catch (err) {
     return res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
@@ -32,12 +32,10 @@ export const getAllCourses = async (req, res) => {
 };
 
 export const getCourseDetail = async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   const { status, data } = await courseDetail(id);
-  if(status){
-    return res
-          .status(httpStatus.OK)
-          .json({ status: true, data: data });
+  if (status) {
+    return res.status(httpStatus.OK).json({ status: true, data: data });
   } else {
     return res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
@@ -53,7 +51,7 @@ export const courseDetail = async (courseId) => {
   } catch (err) {
     return { status: false, message: err.message };
   }
-}
+};
 
 export const getCourseMenu = async (req, res) => {
   const qry = `SELECT id, name FROM categories`;
@@ -68,19 +66,16 @@ export const getCourseMenu = async (req, res) => {
         return {
           id: row.id,
           name: row.name,
-          courses:  coursesList.length? coursesList : []
+          courses: coursesList.length ? coursesList : [],
         };
       })
     );
- return res
-      .status(httpStatus.OK)
-      .json({ status: true, data: resultArray });
-   
+    return res.status(httpStatus.OK).json({ status: true, data: resultArray });
   } catch (err) {
     console.error(err);
     return res
       .status(httpStatus.OK)
-      .json({ status: false, message: err.message});
+      .json({ status: false, message: err.message });
   }
 };
 
@@ -88,9 +83,40 @@ export const getCourseByCategory = async (categoryId) => {
   const qry = `SELECT id, name, slug FROM courses WHERE category_id = ?`;
   try {
     const [rows] = await db.query(qry, [categoryId]);
-    return rows ;
+    return rows;
   } catch (err) {
     console.error(err);
     return { status: false, message: err.message };
   }
 };
+
+export const addCourse = async (req, res) => {
+    const generatedQry = buildQuery(req.body);
+    const qry = `INSERT INTO courses SET ${generatedQry} `;
+    try {
+      const [rows] = await db.query(qry);
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: rows?.insertId });
+    } catch (err) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: err.message });
+    } 
+};
+
+export const deleteCourse = async (req, res) => {
+    const { id } = req.params;
+    const qry = `DELETE FROM courses WHERE id=${id} `;
+    try {
+      const [rows] = await db.query(qry);
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: id });
+    } catch (err) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: err.message });
+    } 
+};
+
