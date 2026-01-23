@@ -2,7 +2,7 @@ import { status as httpStatus } from "http-status";
 import dotenv from "dotenv";
 dotenv.config();
 import db from "../../config/database.js";
-import { buildQuery } from "../utils/common.js";
+import { buildQuery, cleanObject } from "../utils/common.js";
 import formidable, {errors as formidableErrors} from 'formidable';
 import fs from "fs";
 import path from "path";
@@ -120,3 +120,79 @@ export const deleteCourse = async (req, res) => {
     } 
 };
 
+export const updateCourse = async (req, res) => {
+  const {id, ...rest}  = req.body;
+  const cleanObjectData = cleanObject(rest);
+    const generatedQry = buildQuery(cleanObjectData);
+    const qry = `UPDATE courses SET ${generatedQry} WHERE id = ?`;
+ 
+    try {
+      const [rows] = await db.query(qry, [id]);
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: id });
+    } catch (err) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: err.message });
+    } 
+};
+
+export const getUpcomingCourses = async (req, res) => {
+  const qry = `SELECT * FROM upcoming_course ORDER BY id DESC`;
+  try {
+    const [rows] = await db.query(qry);
+    return res.status(httpStatus.OK).json({ status: true, data: rows });
+  } catch (err) {
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: err.message });
+  }
+};
+
+export const addUpcomingCourses = async (req, res) => {
+    const generatedQry = buildQuery(req.body);
+    const qry = `INSERT INTO upcoming_course SET ${generatedQry} `;
+    try {
+      const [rows] = await db.query(qry);
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: rows?.insertId });
+    } catch (err) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: err.message });
+    } 
+};
+
+export const updateUpcomingCourses = async (req, res) => {
+  const {id, ...rest}  = req.body;
+  const cleanObjectData = cleanObject(rest);
+    const generatedQry = buildQuery(cleanObjectData);
+    const qry = `UPDATE upcoming_course SET ${generatedQry} WHERE id = ?`;
+    try {
+      const [rows] = await db.query(qry, [id]);
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: id });
+    } catch (err) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: err.message });
+    } 
+};
+
+export const deleteUpComingCourse = async (req, res) => {
+    const { id } = req.params;
+    const qry = `DELETE FROM upcoming_course WHERE id=${id} `;
+    try {
+      const [rows] = await db.query(qry);
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: id });
+    } catch (err) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: err.message });
+    } 
+};
