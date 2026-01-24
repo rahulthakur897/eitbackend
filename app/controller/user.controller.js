@@ -121,3 +121,18 @@ export const removeCourseToCart = async (req, res) => {
             .json({ status: false, message: err.message });
     }
 };
+
+export const getInstructors = async (req, res) => { 
+    const qry = `SELECT id, name FROM users WHERE user_type='instructor'`;
+    try {
+        const [rows] = await db.query(qry);
+        return res.status(httpStatus.OK).json({
+            status: true,
+            data: rows,
+        });
+    } catch (err) {
+        return res
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .json({ status: false, message: err.message });
+    }
+};
