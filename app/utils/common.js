@@ -1,7 +1,7 @@
 export const buildQuery = (data) =>
   Object.entries(data)
-    .filter(([_, v]) => v !== undefined && v !== null && v !== "" &&  v !== "null" && v !== "undefined")
-    .map(([k, v]) => k!=='id'? `${k}='${String(v).replace(/'/g, "\\'")}'` : null)
+    .filter(([k, v]) => k !='id' && v !== undefined && v !== null && v !== "" &&  v !== "null" && v !== "undefined")
+    .map(([k, v]) => `${k}='${String(v).replace(/'/g, "\\'")}'` )
     .join(", ");
 
   export const cleanObject = (data) =>
