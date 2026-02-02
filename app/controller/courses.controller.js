@@ -7,17 +7,17 @@ import formidable, {errors as formidableErrors} from 'formidable';
 import fs from "fs";
 import path from "path";
 
-export const getPopularCourses = async (req, res) => {
-  const qry = `SELECT id, name, course_logo FROM courses ORDER BY id DESC`;
-  try {
-    const [rows] = await db.query(qry);
-    return res.status(httpStatus.OK).json({ status: true, data: rows });
-  } catch (err) {
-    return res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({ status: false, message: err.message });
-  }
-};
+// export const getPopularCourses = async (req, res) => {
+//   const qry = `SELECT id, name, course_logo FROM courses ORDER BY id DESC`;
+//   try {
+//     const [rows] = await db.query(qry);
+//     return res.status(httpStatus.OK).json({ status: true, data: rows });
+//   } catch (err) {
+//     return res
+//       .status(httpStatus.INTERNAL_SERVER_ERROR)
+//       .json({ status: false, message: err.message });
+//   }
+// };
 
 export const getAllCourses = async (req, res) => {
   const qry = `SELECT * FROM courses ORDER BY id DESC`;
@@ -139,7 +139,8 @@ export const updateCourse = async (req, res) => {
 };
 
 export const getUpcomingCourses = async (req, res) => {
-  const qry = `SELECT * FROM upcoming_course ORDER BY id DESC`;
+  const qry = `SELECT uc.*, c.course_logo, name FROM upcoming_course uc, courses c 
+  WHERE uc.course_id = c.id ORDER BY uc.id DESC`;
   try {
     const [rows] = await db.query(qry);
     return res.status(httpStatus.OK).json({ status: true, data: rows });
@@ -187,6 +188,67 @@ export const deleteUpComingCourse = async (req, res) => {
     const qry = `DELETE FROM upcoming_course WHERE id=${id} `;
     try {
       const [rows] = await db.query(qry);
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: id });
+    } catch (err) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: err.message });
+    } 
+};
+// popular course
+
+export const getPopularCourses = async (req, res) => {
+  const qry = `SELECT pc.*, c.course_logo, name FROM popular_courses pc, courses c 
+  WHERE pc.course_id = c.id ORDER BY pc.id DESC`;
+  try {
+    const [rows] = await db.query(qry);
+    return res.status(httpStatus.OK).json({ status: true, data: rows });
+  } catch (err) {
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: err.message });
+  }
+};
+
+export const addPopularCourses = async (req, res) => {
+    const generatedQry = buildQuery(req.body);
+    const qry = `INSERT INTO popular_courses SET ${generatedQry} `;
+    try {
+      const [rows] = await db.query(qry);
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: rows?.insertId });
+    } catch (err) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: err.message });
+    } 
+};
+
+export const deletePopularCourses = async (req, res) => {
+    const { id } = req.params;
+    const qry = `DELETE FROM popular_courses WHERE id=${id} `;
+    try {
+      const [rows] = await db.query(qry);
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: id });
+    } catch (err) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: false, message: err.message });
+    } 
+};
+
+export const updatePopularCourses = async (req, res) => {
+  const {id, ...rest}  = req.body;
+  const cleanObjectData = cleanObject(rest);
+    const generatedQry = buildQuery(cleanObjectData);
+    const qry = `UPDATE popular_courses SET ${generatedQry} WHERE id = ?`;
+    try {
+      const [rows] = await db.query(qry, [id]);
       return res
         .status(httpStatus.OK)
         .json({ status: true, data: id });

@@ -11,6 +11,9 @@ import {
   addUpcomingCourses,
   updateUpcomingCourses,
   deleteUpComingCourse,
+  addPopularCourses,
+  updatePopularCourses,
+  deletePopularCourses
 } from "../app/controller/courses.controller.js";
 const router = express.Router();
 
@@ -25,4 +28,8 @@ router.get("/upcoming", getUpcomingCourses);
 router.post("/upcoming/add", addUpcomingCourses);
 router.post("/upcoming/update", updateUpcomingCourses);
 router.delete("/upcoming/delete/:id", deleteUpComingCourse);
+router.get("/popular", getPopularCourses);
+router.post("/popular/add", addPopularCourses);
+router.post("/popular/update", updatePopularCourses);
+router.delete("/popular/delete/:id", deletePopularCourses);
 export default router;
