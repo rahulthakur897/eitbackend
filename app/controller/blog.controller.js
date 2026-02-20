@@ -73,7 +73,6 @@ export const deleteBlog = async (req, res) => {
     const qry = `DELETE FROM blog WHERE id=${id} `;
     try {
       const [rows] = await db.query(qry);
-      console.log(rows);
       if (rows.affectedRows === 0) {
         return res.status(httpStatus.NOT_FOUND).json({ status: false, message: "Blog not found" });
       }

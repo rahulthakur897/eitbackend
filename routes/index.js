@@ -6,6 +6,7 @@ import categoryRoutes from './category.route.js';
 import courseRoutes from './course.route.js';
 import cart from './cart.route.js';
 import blogRoutes from './blog.route.js';
+import enquiryRoutes from './enquiry.route.js';
 const router = express.Router();
 
 router.use('/mail', mailRoutes);
@@ -15,5 +16,6 @@ router.use('/category', categoryRoutes);
 router.use('/course', courseRoutes);
 router.use('/cart', cart);
 router.use('/blog', blogRoutes);
+router.use('/enquiry', enquiryRoutes);
 
 export default router;
