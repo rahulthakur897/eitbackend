@@ -32,9 +32,9 @@ export const adminLogin = async (req, res) => {
 export const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const hash = md5(password);
-  const qry = `SELECT id, name, contact, user_type, email, profile_photo FROM users WHERE email=? AND password=?`;
+  const qry = `SELECT id, name, contact, user_type, email, profile_photo FROM users WHERE email=? AND password=? AND user_type=?`;
   try {
-    const [rows] = await db.query(qry, [email, hash]);
+    const [rows] = await db.query(qry, [email, hash, UserType.USER]);
     if (rows?.length) {
       return res
         .status(httpStatus.OK)
