@@ -6,6 +6,29 @@ import db from "../../config/database.js";
 import { UserType } from "../utils/constant.js";
 import {sendForgetPwdEmail} from "./mail.controller.js";
 
+export const adminLogin = async (req, res) => {
+  const { username, password } = req.body;
+  const hash = md5(password);
+  const qry = `SELECT id, name, contact, user_type, email, profile_photo FROM users 
+  WHERE email=? AND password=? AND user_type=?`;
+  try {
+    const [rows] = await db.query(qry, [username, hash, UserType.ADMIN]);
+    if (rows?.length) {
+      return res
+        .status(httpStatus.OK)
+        .json({ status: true, data: rows });
+    } else {
+      return res
+        .status(httpStatus.UNAUTHORIZED)
+        .json({ status: false, message: 'Invalid username or password' });
+    }
+  } catch (err) {
+    return res
+      .status(httpStatus.INTERNAL_SERVER_ERROR)
+      .json({ status: false, message: err.message });
+  }
+};
+
 export const userLogin = async (req, res) => {
   const { email, password } = req.body;
   const hash = md5(password);
@@ -65,7 +88,6 @@ export const forgotPwd = async (req, res) => {
       const [rows] = await db.query(qry, [otp, email]);
       if(rows?.length){
         sendForgetPwdEmail(email, otp);
-        console.log("qry afater");
         return res
           .status(httpStatus.OK)
           .json({ status: true });

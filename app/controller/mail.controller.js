@@ -56,7 +56,6 @@ export const sendItformEmail = async (req, res) => {
 };
 
 export const sendForgetPwdEmail = async (email, otp) => {
-  console.log("email, otp", email, otp);
   // Confirmation email to sender
   const confirmSender = {
     from: process.env.SMTP_USER,
@@ -64,11 +63,9 @@ export const sendForgetPwdEmail = async (email, otp) => {
     subject: 'OTP for Forgot Password',
     html: forgetPwdForm({ otp }),
   };
-  console.log(confirmSender);
   const transporter = hostingerTransporter;
   try {
     await transporter.sendMail(confirmSender);
-    console.log("in send email");
     return { status: true, message: "Email sent successfully!" };
   } catch (error) {
     return { status: false, message: error.message };
