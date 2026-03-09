@@ -38,7 +38,7 @@ export const userLogin = async (req, res) => {
     if (rows?.length) {
       return res
         .status(httpStatus.OK)
-        .json({ status: true, data: rows });
+        .json({ status: true, data: rows[0] });
     } else {
       return res
         .status(httpStatus.UNAUTHORIZED)

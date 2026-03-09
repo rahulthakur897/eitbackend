@@ -136,3 +136,19 @@ export const getInstructors = async (req, res) => {
             .json({ status: false, message: err.message });
     }
 };
+
+export const updateUserProfile = async (req, res) => {
+    const { id, name, email, contact } = req.body;
+    const qry = `UPDATE users SET name=?, email=?, contact=? WHERE id=?`;
+    try {
+        const [rows] = await db.query(qry, [name, email, contact, id]);
+        return res.status(httpStatus.OK).json({
+            status: true,
+            data: {id, name, email, contact},
+        });
+    } catch (err) {
+        return res
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .json({ status: false, message: err.message });
+    }
+};
