@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import hostingerTransporter from "../../config/hostinger.js";
 import { enquiryTemplate, itForm, forgetPwdForm } from "../../template/eia/index.js";
+import { registerForm } from '../../template/eia/register.js';
 dotenv.config();
 
 export const sendEnquiryEmail = async (req, res) => {
@@ -71,3 +72,24 @@ export const sendForgetPwdEmail = async (email, otp) => {
     return { status: false, message: error.message };
   }
 };
+
+export const sendVerificationEmail = async(name, email, otp) => {
+  // Confirmation email to sender
+  console.log("name, email, otp", name, email, otp);
+  const confirmSender = {
+    from: process.env.SMTP_USER,
+    to: email,
+    subject: 'OTP for Signup',
+    html: registerForm({ name, otp }),
+  };
+  const transporter = hostingerTransporter;
+  try {
+    console.log("confirmSender", confirmSender);
+    await transporter.sendMail(confirmSender);
+    console.log("mail sent");
+    return { status: true, message: "Email sent successfully!" };
+  } catch (error) {
+    console.log("mail did not sent", JSON.stringify(error));
+    return { status: false, message: error.message };
+  }
+}

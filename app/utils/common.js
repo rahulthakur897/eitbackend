@@ -4,7 +4,7 @@ export const buildQuery = (data) =>
     .map(([k, v]) => `${k}='${String(v).replace(/'/g, "\\'")}'` )
     .join(", ");
 
-  export const cleanObject = (data) =>
+export const cleanObject = (data) =>
   Object.fromEntries(
     Object.entries(data).filter(([_, v]) => {
       if (v === undefined || v === null) return false;
@@ -18,3 +18,7 @@ export const buildQuery = (data) =>
       return true;
     })
   );
+
+export const generateOTP = () => {
+  return Math.floor(Math.random() * 9000) + 1000;
+}
